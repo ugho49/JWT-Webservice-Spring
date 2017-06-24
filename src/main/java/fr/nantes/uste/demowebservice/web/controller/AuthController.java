@@ -1,7 +1,7 @@
 package fr.nantes.uste.demowebservice.web.controller;
 
 import fr.nantes.uste.demowebservice.web.bean.User;
-import fr.nantes.uste.demowebservice.web.request.JwtAuthenticationRequest;
+import fr.nantes.uste.demowebservice.web.request.AuthenticationRequest;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class AuthController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/auth")
-    public DataEnvelop createAuthenticationToken(JwtAuthenticationRequest request) {
+    public DataEnvelop createAuthenticationToken(AuthenticationRequest request) {
         // Perform the security
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

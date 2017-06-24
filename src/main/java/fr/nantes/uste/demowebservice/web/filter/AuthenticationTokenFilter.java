@@ -1,4 +1,4 @@
-package fr.nantes.uste.demowebservice.config;
+package fr.nantes.uste.demowebservice.web.filter;
 
 import fr.nantes.uste.demowebservice.web.bean.User;
 import fr.nantes.uste.demowebservice.web.service.UserService;
@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * Created by ughostephan on 24/06/2017.
  */
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Value("${jwt.header}")
     private String tokenHeader;

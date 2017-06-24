@@ -1,5 +1,6 @@
 package fr.nantes.uste.demowebservice.config;
 
+import fr.nantes.uste.demowebservice.web.filter.AuthenticationTokenFilter;
 import fr.nantes.uste.demowebservice.web.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,8 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationTokenFilter();
+    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+        return new AuthenticationTokenFilter();
     }
 
     @Override

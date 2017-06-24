@@ -5,12 +5,12 @@ import java.io.Serializable;
 /**
  * Created by ughostephan on 23/06/2017.
  */
-public class JwtAuthenticationRequest implements Serializable {
+public class AuthenticationRequest implements Serializable {
 
     private String email;
     private String password;
 
-    public JwtAuthenticationRequest() {
+    public AuthenticationRequest() {
     }
 
     public String getEmail() {
