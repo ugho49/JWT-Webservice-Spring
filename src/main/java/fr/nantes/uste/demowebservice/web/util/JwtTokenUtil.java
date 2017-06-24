@@ -17,9 +17,9 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    public static final String CLAIM_KEY_SUBJECT = "sub";
-    public static final String CLAIM_KEY_NAME = "name";
-    public static final String CLAIM_KEY_EMAIL = "email";
+    private static final String CLAIM_KEY_SUBJECT = "sub";
+    private static final String CLAIM_KEY_NAME = "name";
+    private static final String CLAIM_KEY_EMAIL = "email";
 
     @Value("${jwt.secret}")
     private String secret;
@@ -100,6 +100,7 @@ public class JwtTokenUtil {
     private String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
