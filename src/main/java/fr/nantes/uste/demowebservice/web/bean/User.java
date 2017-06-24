@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
  */
 public class User implements UserDetails, Serializable {
 
-    public static final String BIRTHDAY_PATTERN = "yyyy-MM-dd";
+    /**
+     * The constant BIRTHDAY_PATTERN.
+     */
+    public static final String BIRTHDAY_PATTERN = "yyyy-M-d";
 
     private String uid;
 
@@ -287,5 +290,15 @@ public class User implements UserDetails, Serializable {
      */
     public void addRole(Roles role) {
         roles.add(role.toString());
+    }
+
+    /**
+     * Has role boolean.
+     *
+     * @param role the role
+     * @return the boolean
+     */
+    public boolean hasRole(Roles role) {
+        return roles.contains(role.toString());
     }
 }

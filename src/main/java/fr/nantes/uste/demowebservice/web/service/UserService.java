@@ -7,6 +7,7 @@ import fr.nantes.uste.demowebservice.web.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,44 +23,82 @@ public class UserService {
     private UserConverter converter;
 
     /**
-     * Gets all.
+     * Find all list.
      *
-     * @return the all
+     * @return the list
      */
-    public List<User> getAll() {
+    public List<User> findAll() {
         List<User> beans = new ArrayList<>();
         repository.findAll().forEach(e -> beans.add(converter.toBean(e)));
         return beans;
     }
 
     /**
-     * Gets by id.
+     * Find by id user.
      *
      * @param uid the uid
-     * @return the by id
+     * @return the user
      */
-    public User getById(String uid) {
+    public User findById(String uid) {
         return converter.toBean(repository.findOne(uid));
     }
 
     /**
-     * Gets by email.
+     * Find by email user.
      *
      * @param email the email
-     * @return the by email
+     * @return the user
      */
-    public User getByEmail(String email) {
+    public User findByEmail(String email) {
         return converter.toBean(repository.findByEmail(email));
     }
 
     /**
-     * Add user.
+     * Create user.
      *
      * @param user the user
      * @return the user
      */
-    public User add(User user) {
+    public User create(User user) {
         UserEntity entityAdded = repository.save(converter.toEntity(user));
         return converter.toBean(entityAdded);
+    }
+
+    /**
+     * Update.
+     *
+     * @param user the user
+     */
+    public void update(User user) {
+        UserEntity entity= repository.findOne(user.getUid());
+
+        if (entity == null)
+            throw new EntityNotFoundException();
+
+        repository.saveAndFlush(converter.toEntity(user));
+    }
+
+    /**
+     * Delete.
+     *
+     * @param uid the uid
+     */
+    public void delete(String uid) {
+        UserEntity entityToDelete = repository.findOne(uid);
+
+        if (entityToDelete == null)
+            throw new EntityNotFoundException();
+
+        repository.delete(entityToDelete);
+    }
+
+    /**
+     * Email already used boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     */
+    public boolean emailAlreadyUsed(String email) {
+        return repository.countUserForEmail(email) > 0;
     }
 }

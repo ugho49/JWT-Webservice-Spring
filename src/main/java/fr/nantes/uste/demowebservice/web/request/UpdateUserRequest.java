@@ -1,7 +1,6 @@
 package fr.nantes.uste.demowebservice.web.request;
 
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -9,17 +8,14 @@ import java.io.Serializable;
 /**
  * Created by ughostephan on 23/06/2017.
  */
-public class AddUserRequest implements Serializable, IUserRequest {
+public class UpdateUserRequest implements Serializable, IUserRequest {
 
-    @NotBlank
     @Size(max = 100)
     private String firstname;
 
-    @NotBlank
     @Size(max = 100)
     private String lastname;
 
-    @NotBlank
     @Email
     @Size(max = 100)
     private String email;
@@ -32,11 +28,10 @@ public class AddUserRequest implements Serializable, IUserRequest {
     @Size(max = 100)
     private String country;
 
-    @NotBlank
     @Size(min = 8)
     private String password;
 
-    public AddUserRequest() {
+    public UpdateUserRequest() {
     }
 
     public String getFirstname() {

@@ -2,9 +2,9 @@ package fr.nantes.uste.demowebservice.web.validator;
 
 
 import fr.nantes.uste.demowebservice.web.bean.User;
-import fr.nantes.uste.demowebservice.web.request.AddUserRequest;
+import fr.nantes.uste.demowebservice.web.request.IUserRequest;
 import fr.nantes.uste.demowebservice.web.service.UserService;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -15,24 +15,24 @@ import java.util.Date;
 /**
  * Created by ughostephan on 24/06/2017.
  */
-public class AddUserValidator implements Validator{
+public class UserValidator implements Validator{
 
-    private UserService userService;
+    protected UserService userService;
 
-    public AddUserValidator(UserService userService) {
+    public UserValidator(UserService userService) {
         this.userService = userService;
     }
 
     @Override
     public boolean supports(Class clazz) {
-        return AddUserRequest.class.equals(clazz);
+        return IUserRequest.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        final AddUserRequest request = (AddUserRequest) target;
+        final IUserRequest request = (IUserRequest) target;
 
-        if (!StringUtils.isEmpty(request.getBirthday())) {
+        if (StringUtils.isNotEmpty(request.getBirthday())) {
             try {
                 SimpleDateFormat df = new SimpleDateFormat(User.BIRTHDAY_PATTERN);
                 Date birthday = df.parse(request.getBirthday());
@@ -45,8 +45,8 @@ public class AddUserValidator implements Validator{
             }
         }
 
-        if (!StringUtils.isEmpty(request.getEmail())) {
-            if (userService.getByEmail(request.getEmail()) != null) {
+        if (StringUtils.isNotEmpty(request.getEmail())) {
+            if (userService.emailAlreadyUsed(request.getEmail())) {
                 errors.rejectValue("email",  null, "already used");
             }
         }

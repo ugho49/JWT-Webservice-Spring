@@ -3,14 +3,14 @@ package fr.nantes.uste.demowebservice.web.converter;
 import fr.nantes.uste.demowebservice.web.bean.User;
 import fr.nantes.uste.demowebservice.web.entity.UserEntity;
 import org.apache.tomcat.util.buf.StringUtils;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 /**
  * Created by ughostephan on 23/06/2017.
  */
-@Service
+@Component
 public class UserConverter implements IConverter<User, UserEntity> {
 
     @Override
