@@ -1,14 +1,21 @@
 package fr.nantes.uste.demowebservice.web.controller;
 
+import fr.nantes.uste.demowebservice.web.bean.Roles;
 import fr.nantes.uste.demowebservice.web.bean.User;
+import fr.nantes.uste.demowebservice.web.request.AddUserRequest;
 import fr.nantes.uste.demowebservice.web.service.UserService;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
+import fr.nantes.uste.demowebservice.web.validator.AddUserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * Created by ughostephan on 23/06/2017.
@@ -56,17 +63,28 @@ public class UserController {
 
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    public DataEnvelop addUser() {
-        /*User u = new User();
-        u.setFirstname("Lxfgea");
-        u.setLastname("ggfxgxfg");
-        u.setEmail("lexgfa.xg@gmail.com");
+    public DataEnvelop addUser(@Valid @ModelAttribute AddUserRequest request, BindingResult result) {
+
+        new AddUserValidator(userService).validate(request, result);
+
+        if (result.hasErrors()) {
+            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
+        }
+
+        User u = new User();
+        u.setFirstname(request.getFirstname());
+        u.setLastname(request.getLastname());
+        u.setEmail(request.getEmail());
+        u.setBirthday(request.getBirthdayDate());
+        u.setCity(request.getCity());
+        u.setCountry(request.getCountry());
+        // TODO : change password
         u.setPassword(passwordEncoder.encode("test"));
         u.setCreated_at(new Date());
-        u.setRole(Roles.ROLE_USER.toString());
+        u.addRole(Roles.ROLE_USER);
         u.setEnabled(true);
-        userService.add(u);*/
-        return DataEnvelop.CreateEnvelop(HttpStatus.CREATED, "User created");
+
+        return DataEnvelop.CreateEnvelop(userService.add(u), HttpStatus.CREATED);
     }
 
 }

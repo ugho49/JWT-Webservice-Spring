@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
  */
 public class User implements UserDetails, Serializable {
 
+    public static final String BIRTHDAY_PATTERN = "yyyy-MM-dd";
+
     private String uid;
 
     private String firstname;
@@ -25,7 +28,7 @@ public class User implements UserDetails, Serializable {
     private String email;
 
     @JsonFormat
-            (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+            (shape = JsonFormat.Shape.STRING, pattern = BIRTHDAY_PATTERN)
     private Date birthday;
 
     private String city;
@@ -48,6 +51,7 @@ public class User implements UserDetails, Serializable {
      * Instantiates a new User.
      */
     public User() {
+        roles = new ArrayList<>();
     }
 
     @Override
@@ -274,5 +278,14 @@ public class User implements UserDetails, Serializable {
      */
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    /**
+     * Add role.
+     *
+     * @param role the role
+     */
+    public void addRole(Roles role) {
+        roles.add(role.toString());
     }
 }

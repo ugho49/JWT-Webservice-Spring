@@ -5,13 +5,18 @@ import fr.nantes.uste.demowebservice.web.request.AuthenticationRequest;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * Created by ughostephan on 23/06/2017.
@@ -27,7 +32,12 @@ public class AuthController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/auth")
-    public DataEnvelop createAuthenticationToken(AuthenticationRequest request) {
+    public DataEnvelop createAuthenticationToken(@Valid @ModelAttribute AuthenticationRequest request, BindingResult result) {
+
+        if (result.hasErrors()) {
+            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
+        }
+
         // Perform the security
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

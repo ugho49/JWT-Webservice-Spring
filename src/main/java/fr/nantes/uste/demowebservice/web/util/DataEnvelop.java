@@ -2,8 +2,11 @@ package fr.nantes.uste.demowebservice.web.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by ughostephan on 23/06/2017.
@@ -18,6 +21,8 @@ public class DataEnvelop {
     private Date timestamp = new Date();
 
     private String error;
+
+    private List<String> errorList;
 
     private DataEnvelop(Object data) {
         this.data = data;
@@ -63,6 +68,29 @@ public class DataEnvelop {
      */
     public static DataEnvelop CreateEnvelop(HttpStatus status, String error) {
         return new DataEnvelop(status, error);
+    }
+
+    private DataEnvelop(HttpStatus status, String error, List<String> errorList) {
+        this.error = error;
+        this.status = status;
+        this.errorList = errorList;
+    }
+
+
+    /**
+     * Create envelop data envelop.
+     *
+     * @param status the status
+     * @param error  the error
+     * @param result the result
+     * @return the data envelop
+     */
+    public static DataEnvelop CreateEnvelop(HttpStatus status, String error, BindingResult result) {
+        final List<String> errorList = result.getFieldErrors().stream()
+                .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        return new DataEnvelop(status, error, errorList);
     }
 
     /**
@@ -135,5 +163,23 @@ public class DataEnvelop {
      */
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    /**
+     * Gets error list.
+     *
+     * @return the error list
+     */
+    public List<String> getErrorList() {
+        return errorList;
+    }
+
+    /**
+     * Sets error list.
+     *
+     * @param errorList the error list
+     */
+    public void setErrorList(List<String> errorList) {
+        this.errorList = errorList;
     }
 }
