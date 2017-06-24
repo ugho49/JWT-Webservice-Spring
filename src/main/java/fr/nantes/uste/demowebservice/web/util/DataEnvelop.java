@@ -2,6 +2,7 @@ package fr.nantes.uste.demowebservice.web.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import java.util.Date;
@@ -24,6 +25,14 @@ public class DataEnvelop {
 
     private List<String> errorList;
 
+    private static ResponseEntity makeResponseEntity(DataEnvelop envelop, HttpStatus status) {
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity(envelop, status);
+    }
+
     private DataEnvelop(Object data) {
         this.data = data;
     }
@@ -34,8 +43,8 @@ public class DataEnvelop {
      * @param data the data
      * @return the data envelop
      */
-    public static DataEnvelop CreateEnvelop(Object data) {
-        return new DataEnvelop(data);
+    public static ResponseEntity CreateEnvelop(Object data) {
+        return makeResponseEntity(new DataEnvelop(data), HttpStatus.OK);
     }
 
     private DataEnvelop(Object data, HttpStatus status) {
@@ -44,14 +53,14 @@ public class DataEnvelop {
     }
 
     /**
-     * Create envelop data envelop.
+     * Create envelop response entity.
      *
-     * @param data   the data
      * @param status the status
-     * @return the data envelop
+     * @param data   the data
+     * @return the response entity
      */
-    public static DataEnvelop CreateEnvelop(Object data, HttpStatus status) {
-        return new DataEnvelop(data, status);
+    public static ResponseEntity CreateEnvelop(HttpStatus status, Object data) {
+        return makeResponseEntity(new DataEnvelop(data, status), status);
     }
 
     private DataEnvelop(HttpStatus status, String error) {
@@ -59,15 +68,16 @@ public class DataEnvelop {
         this.status = status;
     }
 
+
     /**
-     * Create envelop data envelop.
+     * Create envelop response entity.
      *
      * @param status the status
      * @param error  the error
-     * @return the data envelop
+     * @return the response entity
      */
-    public static DataEnvelop CreateEnvelop(HttpStatus status, String error) {
-        return new DataEnvelop(status, error);
+    public static ResponseEntity CreateEnvelop(HttpStatus status, String error) {
+        return makeResponseEntity(new DataEnvelop(status, error), status);
     }
 
     private DataEnvelop(HttpStatus status, String error, List<String> errorList) {
@@ -85,12 +95,12 @@ public class DataEnvelop {
      * @param result the result
      * @return the data envelop
      */
-    public static DataEnvelop CreateEnvelop(HttpStatus status, String error, BindingResult result) {
+    public static ResponseEntity CreateEnvelop(HttpStatus status, String error, BindingResult result) {
         final List<String> errorList = result.getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        return new DataEnvelop(status, error, errorList);
+        return makeResponseEntity(new DataEnvelop(status, error, errorList), status);
     }
 
     /**

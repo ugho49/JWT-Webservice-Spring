@@ -6,6 +6,7 @@ import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +33,7 @@ public class AuthController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/auth")
-    public DataEnvelop createAuthenticationToken(@Valid @ModelAttribute AuthenticationRequest request, BindingResult result) {
+    public ResponseEntity createAuthenticationToken(@Valid @ModelAttribute AuthenticationRequest request, BindingResult result) {
 
         if (result.hasErrors()) {
             return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);

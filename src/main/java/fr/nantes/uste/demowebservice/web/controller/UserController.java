@@ -8,6 +8,7 @@ import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.validator.AddUserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,24 +33,24 @@ public class UserController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    public DataEnvelop getUsers() {
+    public ResponseEntity getUsers() {
         return DataEnvelop.CreateEnvelop(userService.getAll());
     }
 
     @GetMapping("/user/{id}")
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    public DataEnvelop getUserById(@PathVariable(name = "id") String id) {
+    public ResponseEntity getUserById(@PathVariable(name = "id") String id) {
         final User u = userService.getById(id);
 
         if (u != null) {
-            return DataEnvelop.CreateEnvelop(u);
+            return ResponseEntity.ok(DataEnvelop.CreateEnvelop(u));
         }
 
-        return DataEnvelop.CreateEnvelop(HttpStatus.NO_CONTENT, "User not found");
+        return DataEnvelop.CreateEnvelop(HttpStatus.NOT_FOUND, "User not found");
     }
 
     @GetMapping("/user")
-    public DataEnvelop getCurrentUser() {
+    public ResponseEntity getCurrentUser() {
         final User userFromToken = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         //final User user = userService.getById(userFromToken.getUid());
@@ -58,12 +59,12 @@ public class UserController {
             return DataEnvelop.CreateEnvelop(userFromToken);
         }
 
-        return DataEnvelop.CreateEnvelop(HttpStatus.NO_CONTENT, "User not found");
+        return DataEnvelop.CreateEnvelop(HttpStatus.NOT_FOUND, "User not found");
     }
 
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    public DataEnvelop addUser(@Valid @ModelAttribute AddUserRequest request, BindingResult result) {
+    public ResponseEntity addUser(@Valid @ModelAttribute AddUserRequest request, BindingResult result) {
 
         new AddUserValidator(userService).validate(request, result);
 
@@ -84,7 +85,7 @@ public class UserController {
         u.addRole(Roles.ROLE_USER);
         u.setEnabled(true);
 
-        return DataEnvelop.CreateEnvelop(userService.add(u), HttpStatus.CREATED);
+        return DataEnvelop.CreateEnvelop(HttpStatus.CREATED, userService.add(u));
     }
 
 }
