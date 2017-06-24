@@ -1,4 +1,4 @@
-package fr.nantes.uste.demowebservice.web.controller;
+package fr.nantes.uste.demowebservice.web.controller.api;
 
 import fr.nantes.uste.demowebservice.web.bean.Roles;
 import fr.nantes.uste.demowebservice.web.bean.User;

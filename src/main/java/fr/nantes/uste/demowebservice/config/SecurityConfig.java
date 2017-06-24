@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 // we don't need CSRF because our token is invulnerable
                 .csrf().disable()
-
                 //.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 
                 // don't create session
@@ -60,8 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // allow anonymous resource requests
                 //.antMatchers(HttpMethod.GET).permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/api/auth/**").anonymous()
+                .antMatchers("/api/**").authenticated();
 
         // Custom JWT based security filter
         httpSecurity
