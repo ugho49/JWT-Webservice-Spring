@@ -1,4 +1,4 @@
-package fr.nantes.uste.demowebservice.web.request;
+package fr.nantes.uste.demowebservice.web.model;
 
 import fr.nantes.uste.demowebservice.web.bean.User;
 import org.springframework.util.StringUtils;
@@ -11,7 +11,7 @@ import java.util.TimeZone;
 /**
  * Created by ughostephan on 24/06/2017.
  */
-public interface IUserRequest {
+public interface IUserModel {
 
     String getBirthday();
 

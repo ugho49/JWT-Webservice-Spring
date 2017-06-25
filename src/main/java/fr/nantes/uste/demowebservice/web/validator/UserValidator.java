@@ -2,7 +2,7 @@ package fr.nantes.uste.demowebservice.web.validator;
 
 
 import fr.nantes.uste.demowebservice.web.bean.User;
-import fr.nantes.uste.demowebservice.web.request.IUserRequest;
+import fr.nantes.uste.demowebservice.web.model.IUserModel;
 import fr.nantes.uste.demowebservice.web.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
@@ -25,12 +25,12 @@ public class UserValidator implements Validator{
 
     @Override
     public boolean supports(Class clazz) {
-        return IUserRequest.class.equals(clazz);
+        return IUserModel.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        final IUserRequest request = (IUserRequest) target;
+        final IUserModel request = (IUserModel) target;
 
         if (StringUtils.isNotEmpty(request.getBirthday())) {
             try {

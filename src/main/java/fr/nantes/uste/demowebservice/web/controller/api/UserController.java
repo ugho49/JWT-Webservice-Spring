@@ -3,8 +3,8 @@ package fr.nantes.uste.demowebservice.web.controller.api;
 import fr.nantes.uste.demowebservice.web.bean.Role;
 import fr.nantes.uste.demowebservice.web.bean.User;
 import fr.nantes.uste.demowebservice.web.mailer.UserMailer;
-import fr.nantes.uste.demowebservice.web.request.AddUserRequest;
-import fr.nantes.uste.demowebservice.web.request.UpdateUserRequest;
+import fr.nantes.uste.demowebservice.web.model.AddUserModel;
+import fr.nantes.uste.demowebservice.web.model.UpdateUserModel;
 import fr.nantes.uste.demowebservice.web.service.UserService;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.validator.UserValidator;
@@ -70,34 +70,34 @@ public class UserController {
 
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    public ResponseEntity addUser(@Valid @ModelAttribute AddUserRequest request, BindingResult result) {
+    public ResponseEntity addUser(@Valid @ModelAttribute AddUserModel model, BindingResult result) {
 
-        new UserValidator(userService).validate(request, result);
+        new UserValidator(userService).validate(model, result);
 
         if (result.hasErrors()) {
-            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
+            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad model", result);
         }
 
         final User userToAdd = new User();
-        userToAdd.setFirstname(request.getFirstname());
-        userToAdd.setLastname(request.getLastname());
-        userToAdd.setEmail(request.getEmail());
-        userToAdd.setBirthday(request.getBirthdayDate());
-        userToAdd.setCity(request.getCity());
-        userToAdd.setCountry(request.getCountry());
-        userToAdd.setPassword(passwordEncoder.encode(request.getPassword()));
+        userToAdd.setFirstname(model.getFirstname());
+        userToAdd.setLastname(model.getLastname());
+        userToAdd.setEmail(model.getEmail());
+        userToAdd.setBirthday(model.getBirthdayDate());
+        userToAdd.setCity(model.getCity());
+        userToAdd.setCountry(model.getCountry());
+        userToAdd.setPassword(passwordEncoder.encode(model.getPassword()));
         userToAdd.setCreated_at(new Date());
         userToAdd.addRole(Role.ROLE_USER);
         userToAdd.setEnabled(true);
 
         final User userAdded = userService.create(userToAdd);
-        mailer.notifyNewUser(userAdded, request.getPassword());
+        mailer.notifyNewUser(userAdded, model.getPassword());
 
         return DataEnvelop.CreateEnvelop(HttpStatus.CREATED, userAdded);
     }
 
     @RequestMapping(value = "/user/{uid}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public ResponseEntity updateUser(@Valid @ModelAttribute UpdateUserRequest request,
+    public ResponseEntity updateUser(@Valid @ModelAttribute UpdateUserModel model,
                                      BindingResult result,
                                      @PathVariable(name = "uid") String uid) {
         final User userFromToken = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -106,10 +106,10 @@ public class UserController {
             return DataEnvelop.CreateEnvelop(HttpStatus.UNAUTHORIZED, "You can't update someone else");
         }
 
-        new UserValidator(userService).validate(request, result);
+        new UserValidator(userService).validate(model, result);
 
         if (result.hasErrors()) {
-            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
+            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad model", result);
         }
 
         final User u = userService.findById(uid);
@@ -121,32 +121,32 @@ public class UserController {
         /**
          * Set values to update
          */
-        if (StringUtils.isNotEmpty(request.getFirstname())) {
-            u.setFirstname(request.getFirstname());
+        if (StringUtils.isNotEmpty(model.getFirstname())) {
+            u.setFirstname(model.getFirstname());
         }
 
-        if (StringUtils.isNotEmpty(request.getLastname())) {
-            u.setLastname(request.getLastname());
+        if (StringUtils.isNotEmpty(model.getLastname())) {
+            u.setLastname(model.getLastname());
         }
 
-        if (StringUtils.isNotEmpty(request.getEmail())) {
-            u.setEmail(request.getEmail());
+        if (StringUtils.isNotEmpty(model.getEmail())) {
+            u.setEmail(model.getEmail());
         }
 
-        if (StringUtils.isNotEmpty(request.getBirthday())) {
-            u.setBirthday(request.getBirthdayDate());
+        if (StringUtils.isNotEmpty(model.getBirthday())) {
+            u.setBirthday(model.getBirthdayDate());
         }
 
-        if (StringUtils.isNotEmpty(request.getCity())) {
-            u.setCity(request.getCity());
+        if (StringUtils.isNotEmpty(model.getCity())) {
+            u.setCity(model.getCity());
         }
 
-        if (StringUtils.isNotEmpty(request.getCountry())) {
-            u.setCountry(request.getCountry());
+        if (StringUtils.isNotEmpty(model.getCountry())) {
+            u.setCountry(model.getCountry());
         }
 
-        if (StringUtils.isNotEmpty(request.getPassword())) {
-            u.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (StringUtils.isNotEmpty(model.getPassword())) {
+            u.setPassword(passwordEncoder.encode(model.getPassword()));
         }
 
         userService.update(u);

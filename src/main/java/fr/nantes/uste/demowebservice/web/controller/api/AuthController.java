@@ -1,7 +1,7 @@
 package fr.nantes.uste.demowebservice.web.controller.api;
 
 import fr.nantes.uste.demowebservice.web.bean.User;
-import fr.nantes.uste.demowebservice.web.request.AuthenticationRequest;
+import fr.nantes.uste.demowebservice.web.model.AuthenticationModel;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.util.JwtTokenUtil;
 import org.springframework.http.HttpStatus;
@@ -33,17 +33,17 @@ public class AuthController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/auth")
-    public ResponseEntity createAuthenticationToken(@Valid @ModelAttribute AuthenticationRequest request, BindingResult result) {
+    public ResponseEntity createAuthenticationToken(@Valid @ModelAttribute AuthenticationModel model, BindingResult result) {
 
         if (result.hasErrors()) {
-            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
+            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad model", result);
         }
 
         // Perform the security
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        model.getEmail(),
+                        model.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);

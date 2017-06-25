@@ -1,4 +1,4 @@
-package fr.nantes.uste.demowebservice.web.request;
+package fr.nantes.uste.demowebservice.web.model;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by ughostephan on 23/06/2017.
  */
-public class AuthenticationRequest implements Serializable {
+public class AuthenticationModel implements Serializable {
 
     @NotBlank
     @Email
@@ -17,7 +17,7 @@ public class AuthenticationRequest implements Serializable {
     @NotBlank
     private String password;
 
-    public AuthenticationRequest() {
+    public AuthenticationModel() {
     }
 
     public String getEmail() {
