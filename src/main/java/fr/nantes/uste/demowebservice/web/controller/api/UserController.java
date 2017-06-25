@@ -80,6 +80,7 @@ public class UserController {
             return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
         }
 
+        // Define new User
         final User userToAdd = new User();
         userToAdd.setFirstname(model.getFirstname());
         userToAdd.setLastname(model.getLastname());
@@ -92,7 +93,10 @@ public class UserController {
         userToAdd.addRole(Role.ROLE_USER);
         userToAdd.setEnabled(true);
 
+        // Create user
         final User userAdded = userService.create(userToAdd);
+
+        // Sen mail to New User
         mailer.notifyNewUser(userAdded, model.getPassword());
 
         return DataEnvelop.CreateEnvelop(HttpStatus.CREATED, userAdded);
@@ -124,9 +128,7 @@ public class UserController {
             return DataEnvelop.CreateEnvelop(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        /**
-         * Set values to update
-         */
+        // Set properties to update
         if (StringUtils.isNotEmpty(model.getFirstname())) {
             userToUpdate.setFirstname(model.getFirstname());
         }
@@ -188,6 +190,9 @@ public class UserController {
 
         // Update User
         userService.update(userToUpdate);
+
+        // Send Mail to notify password change
+        mailer.notifyChangePassword(userToUpdate, model.getNew_password());
 
         return DataEnvelop.CreateEnvelop("Password successfully updated");
     }

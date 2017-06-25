@@ -19,6 +19,9 @@ public class MailService {
     @Value("${mail.default.from}")
     private String defaultFrom;
 
+    public static final String BREAK_LINE = "\n";
+    public static final String NEW_LINE = BREAK_LINE + BREAK_LINE;
+
     /**
      * Send mail with default "from" value.
      *
