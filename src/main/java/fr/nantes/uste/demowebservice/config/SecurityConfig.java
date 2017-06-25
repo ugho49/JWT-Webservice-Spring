@@ -2,7 +2,6 @@ package fr.nantes.uste.demowebservice.config;
 
 import fr.nantes.uste.demowebservice.web.filter.AuthenticationTokenFilter;
 import fr.nantes.uste.demowebservice.web.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -59,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // allow anonymous resource requests
-                //.antMatchers(HttpMethod.GET).permitAll()
+                .antMatchers("/static/**").permitAll()
                 .antMatchers("/api/auth/**").anonymous()
                 .antMatchers("/api/**").authenticated();
 
