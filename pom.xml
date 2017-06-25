@@ -31,6 +31,8 @@
 		<jjwt.version>0.7.0</jjwt.version>
 		<junit.version>4.12</junit.version>
 		<mail.version>1.4.7</mail.version>
+		<log4j.version>1.2.17</log4j.version>
+		<velocity.version>1.7</velocity.version>
 	</properties>
 
 	<dependencies>
@@ -73,37 +75,61 @@
 			<version>${jstl.version}</version>
 		</dependency>
 
-		<!-- Other Dependencies -->
+		<!-- JSON Formatter -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>${jackson-core.version}</version>
 		</dependency>
+
+		<!-- Mysql Connector -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector-java.version}</version>
 		</dependency>
+
+		<!-- Apache commons lang for Utils  -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${commons-lang.version}</version>
 		</dependency>
+
+		<!-- For JWT Token -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jjwt.version}</version>
 		</dependency>
+
+		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<!-- Mail -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>${mail.version}</version>
+		</dependency>
+
+		<!-- Velocity template for mails -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>${velocity.version}</version>
 		</dependency>
 	</dependencies>
 

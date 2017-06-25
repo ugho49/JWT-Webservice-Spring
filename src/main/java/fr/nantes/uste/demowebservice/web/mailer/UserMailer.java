@@ -2,6 +2,7 @@ package fr.nantes.uste.demowebservice.web.mailer;
 
 import fr.nantes.uste.demowebservice.web.bean.User;
 import fr.nantes.uste.demowebservice.web.service.MailService;
+import org.apache.velocity.VelocityContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -22,17 +23,13 @@ public class UserMailer {
      * @param clearPassword the clear password
      */
     public void notifyNewUser(final User user, final String clearPassword) {
-        final StringBuilder sb = new StringBuilder();
-        sb
-            .append("Welcome ").append(user.getFirstname()).append(" ").append(user.getLastname().toUpperCase())
-            .append(MailService.BREAK_LINE)
-            .append("You're account have been created successfully")
-            .append(MailService.NEW_LINE)
-            .append("Here you're password: ").append(clearPassword)
-            .append(MailService.NEW_LINE)
-            .append("Thanks to register !");
 
-        service.sendMail(user.getEmail(), "Welcome", sb.toString());
+        VelocityContext context = new VelocityContext();
+        context.put("user", user);
+        context.put("password", clearPassword);
+        final String content = service.resolveTemplate("templates/new-user.vm", context);
+
+        service.sendMailHtml(user.getEmail(), null, "Welcome", content);
     }
 
     /**
@@ -42,18 +39,10 @@ public class UserMailer {
      * @param new_password the new password
      */
     public void notifyChangePassword(final User user, final String new_password) {
+        VelocityContext context = new VelocityContext();
+        context.put("password", new_password);
+        final String content = service.resolveTemplate("templates/change-password.vm", context);
 
-        final StringBuilder sb = new StringBuilder();
-        sb
-                .append("You're password have been changed successfully")
-                .append(MailService.BREAK_LINE)
-                .append("Try to remind this password and delete this mail")
-                .append(MailService.NEW_LINE)
-                .append("Here you're new password: ").append(new_password)
-                .append(MailService.NEW_LINE)
-                .append(MailService.NEW_LINE)
-                .append("Have a good day !");
-
-        service.sendMail(user.getEmail(), "Password change", sb.toString());
+        service.sendMailHtml(user.getEmail(), null, "Password change", content);
     }
 }
