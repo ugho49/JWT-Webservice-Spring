@@ -5,7 +5,8 @@
   "author": "Ugho STEPHAN",
   "private": true,
   "scripts": {
-    "build": "./node_modules/.bin/gulp"
+    "build": "./node_modules/.bin/gulp",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
