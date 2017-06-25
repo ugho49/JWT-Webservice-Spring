@@ -1,0 +1,19 @@
+{
+  "name": "demo-webservice",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugho49/JWT-Webservice-Spring.git"
+  },
+  "author": "Ugho STEPHAN",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "webpack": "^3.0.0"
+  }
+}
