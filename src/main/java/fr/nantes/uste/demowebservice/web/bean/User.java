@@ -20,7 +20,7 @@ public class User implements UserDetails, Serializable {
     /**
      * The constant BIRTHDAY_PATTERN.
      */
-    public static final String BIRTHDAY_PATTERN = "yyyy-M-d";
+    public static final String BIRTHDAY_PATTERN = "yyyy-MM-dd";
 
     private String uid;
 
