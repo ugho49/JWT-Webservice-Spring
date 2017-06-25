@@ -165,4 +165,5 @@ public class UserController {
         userService.delete(uid);
         return DataEnvelop.CreateEnvelop("User successfully deleted");
     }
+
 }

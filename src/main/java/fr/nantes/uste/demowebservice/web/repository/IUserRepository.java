@@ -2,8 +2,6 @@ package fr.nantes.uste.demowebservice.web.repository;
 
 import fr.nantes.uste.demowebservice.web.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,10 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IUserRepository extends JpaRepository<UserEntity, String> {
 
-    UserEntity findByEmail(String email);
+    UserEntity findByEmailAndEnabledTrue(String email);
 
-    @SuppressWarnings("JpaQlInspection")
+    int countByEmail(String email);
+
+    /*@SuppressWarnings("JpaQlInspection")
     @Query("SELECT COUNT(u) FROM UserEntity u " +
-            "WHERE u.email = :email ")
-    int countUserForEmail(@Param("email") String email);
+            "WHERE u.email = :email")
+    int countUserForEmail(@Param("email") String email);*/
 }

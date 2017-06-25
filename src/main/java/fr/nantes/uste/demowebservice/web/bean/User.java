@@ -41,7 +41,6 @@ public class User implements UserDetails, Serializable {
     @JsonIgnore
     private String password;
 
-    @JsonIgnore
     private Date created_at;
 
     @JsonIgnore

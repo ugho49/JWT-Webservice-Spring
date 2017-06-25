@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by ughostephan on 23/06/2017.
@@ -28,9 +28,10 @@ public class UserService {
      * @return the list
      */
     public List<User> findAll() {
-        List<User> beans = new ArrayList<>();
-        repository.findAll().forEach(e -> beans.add(converter.toBean(e)));
-        return beans;
+        return repository.findAll()
+                .stream()
+                .map(u -> converter.toBean(u))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -39,7 +40,7 @@ public class UserService {
      * @param uid the uid
      * @return the user
      */
-    public User findById(String uid) {
+    public User findById(final String uid) {
         return converter.toBean(repository.findOne(uid));
     }
 
@@ -49,8 +50,8 @@ public class UserService {
      * @param email the email
      * @return the user
      */
-    public User findByEmail(String email) {
-        return converter.toBean(repository.findByEmail(email));
+    public User findByEmail(final String email) {
+        return converter.toBean(repository.findByEmailAndEnabledTrue(email));
     }
 
     /**
@@ -59,9 +60,23 @@ public class UserService {
      * @param user the user
      * @return the user
      */
-    public User create(User user) {
+    public User create(final User user) {
         UserEntity entityAdded = repository.save(converter.toEntity(user));
         return converter.toBean(entityAdded);
+    }
+
+    /**
+     * Create all.
+     *
+     * @param users the users
+     */
+    public void createAll(final List<User> users) {
+        final List<UserEntity> entitiesToAdd = users
+                .parallelStream()
+                .map(u -> converter.toEntity(u))
+                .collect(Collectors.toList());
+
+        repository.save(entitiesToAdd);
     }
 
     /**
@@ -69,7 +84,7 @@ public class UserService {
      *
      * @param user the user
      */
-    public void update(User user) {
+    public void update(final User user) {
         UserEntity entity= repository.findOne(user.getUid());
 
         if (entity == null)
@@ -83,7 +98,7 @@ public class UserService {
      *
      * @param uid the uid
      */
-    public void delete(String uid) {
+    public void delete(final String uid) {
         UserEntity entityToDelete = repository.findOne(uid);
 
         if (entityToDelete == null)
@@ -98,7 +113,7 @@ public class UserService {
      * @param email the email
      * @return the boolean
      */
-    public boolean emailAlreadyUsed(String email) {
-        return repository.countUserForEmail(email) > 0;
+    public boolean emailAlreadyUsed(final String email) {
+        return repository.countByEmail(email) > 0;
     }
 }
