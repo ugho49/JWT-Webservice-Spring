@@ -1,7 +1,7 @@
 package fr.nantes.uste.demowebservice.config;
 
 import fr.nantes.uste.demowebservice.web.filter.AuthenticationTokenFilter;
-import fr.nantes.uste.demowebservice.web.service.JwtUserDetailsService;
+import fr.nantes.uste.demowebservice.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.annotation.Resource;
+
 /**
  * Created by ughostephan on 23/06/2017.
  */
@@ -23,9 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    public JwtUserDetailsService userDetailsService;
+    @Resource
+    private UserService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -5,17 +5,19 @@ import fr.nantes.uste.demowebservice.web.converter.UserConverter;
 import fr.nantes.uste.demowebservice.web.entity.UserEntity;
 import fr.nantes.uste.demowebservice.web.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by ughostephan on 23/06/2017.
  */
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private IUserRepository repository;
@@ -28,10 +30,7 @@ public class UserService {
      * @return the list
      */
     public List<User> findAll() {
-        return repository.findAll()
-                .stream()
-                .map(u -> converter.toBean(u))
-                .collect(Collectors.toList());
+        return converter.toBeans(repository.findAll());
     }
 
     /**
@@ -71,12 +70,7 @@ public class UserService {
      * @param users the users
      */
     public void createAll(final List<User> users) {
-        final List<UserEntity> entitiesToAdd = users
-                .parallelStream()
-                .map(u -> converter.toEntity(u))
-                .collect(Collectors.toList());
-
-        repository.save(entitiesToAdd);
+        repository.save(converter.toEntities(users));
     }
 
     /**
@@ -115,5 +109,16 @@ public class UserService {
      */
     public boolean emailAlreadyUsed(final String email) {
         return repository.countByEmail(email) > 0;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        final User user = findByEmail(email);
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
+        } else {
+            return user;
+        }
     }
 }

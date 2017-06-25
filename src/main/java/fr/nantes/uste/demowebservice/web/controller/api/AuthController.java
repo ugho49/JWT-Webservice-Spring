@@ -4,7 +4,6 @@ import fr.nantes.uste.demowebservice.web.bean.User;
 import fr.nantes.uste.demowebservice.web.request.AuthenticationRequest;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.util.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 /**
@@ -26,10 +26,10 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 public class AuthController {
 
-    @Autowired
+    @Resource
     private AuthenticationManager authenticationManager;
 
-    @Autowired
+    @Resource
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/auth")

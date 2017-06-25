@@ -287,8 +287,8 @@ public class User implements UserDetails, Serializable {
      *
      * @param role the role
      */
-    public void addRole(Roles role) {
-        roles.add(role.toString());
+    public void addRole(Role role) {
+        this.roles.add(role.toString());
     }
 
     /**
@@ -297,7 +297,7 @@ public class User implements UserDetails, Serializable {
      * @param role the role
      * @return the boolean
      */
-    public boolean hasRole(Roles role) {
-        return roles.contains(role.toString());
+    public boolean hasRole(Role role) {
+        return this.roles.contains(role.toString());
     }
 }

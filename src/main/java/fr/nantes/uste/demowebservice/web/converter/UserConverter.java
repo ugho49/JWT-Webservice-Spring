@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class UserConverter implements IConverter<User, UserEntity> {
 
     @Override
-    public UserEntity toEntity(User bean) {
+    public UserEntity toEntity(final User bean) {
         UserEntity u = null;
 
         if (bean != null) {
@@ -34,9 +34,9 @@ public class UserConverter implements IConverter<User, UserEntity> {
 
         return u;
     }
-    
+
     @Override
-    public User toBean(UserEntity entity) {
+    public User toBean(final UserEntity entity) {
         User u = null;
 
         if (entity != null) {

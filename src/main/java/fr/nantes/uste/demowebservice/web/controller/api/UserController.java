@@ -1,14 +1,14 @@
 package fr.nantes.uste.demowebservice.web.controller.api;
 
-import fr.nantes.uste.demowebservice.web.bean.Roles;
+import fr.nantes.uste.demowebservice.web.bean.Role;
 import fr.nantes.uste.demowebservice.web.bean.User;
+import fr.nantes.uste.demowebservice.web.mailer.UserMailer;
 import fr.nantes.uste.demowebservice.web.request.AddUserRequest;
 import fr.nantes.uste.demowebservice.web.request.UpdateUserRequest;
 import fr.nantes.uste.demowebservice.web.service.UserService;
 import fr.nantes.uste.demowebservice.web.util.DataEnvelop;
 import fr.nantes.uste.demowebservice.web.validator.UserValidator;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Date;
 
@@ -27,11 +28,14 @@ import java.util.Date;
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
+
+    @Resource
+    private UserMailer mailer;
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
@@ -74,19 +78,22 @@ public class UserController {
             return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
         }
 
-        User u = new User();
-        u.setFirstname(request.getFirstname());
-        u.setLastname(request.getLastname());
-        u.setEmail(request.getEmail());
-        u.setBirthday(request.getBirthdayDate());
-        u.setCity(request.getCity());
-        u.setCountry(request.getCountry());
-        u.setPassword(passwordEncoder.encode(request.getPassword()));
-        u.setCreated_at(new Date());
-        u.addRole(Roles.ROLE_USER);
-        u.setEnabled(true);
+        final User userToAdd = new User();
+        userToAdd.setFirstname(request.getFirstname());
+        userToAdd.setLastname(request.getLastname());
+        userToAdd.setEmail(request.getEmail());
+        userToAdd.setBirthday(request.getBirthdayDate());
+        userToAdd.setCity(request.getCity());
+        userToAdd.setCountry(request.getCountry());
+        userToAdd.setPassword(passwordEncoder.encode(request.getPassword()));
+        userToAdd.setCreated_at(new Date());
+        userToAdd.addRole(Role.ROLE_USER);
+        userToAdd.setEnabled(true);
 
-        return DataEnvelop.CreateEnvelop(HttpStatus.CREATED, userService.create(u));
+        final User userAdded = userService.create(userToAdd);
+        mailer.notifyNewUser(userAdded, request.getPassword());
+
+        return DataEnvelop.CreateEnvelop(HttpStatus.CREATED, userAdded);
     }
 
     @RequestMapping(value = "/user/{uid}", method = {RequestMethod.PUT, RequestMethod.PATCH})
@@ -95,7 +102,7 @@ public class UserController {
                                      @PathVariable(name = "uid") String uid) {
         final User userFromToken = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (!userFromToken.getUid().equals(uid) && !userFromToken.hasRole(Roles.ROLE_ADMINISTRATOR)) {
+        if (!userFromToken.getUid().equals(uid) && !userFromToken.hasRole(Role.ROLE_ADMINISTRATOR)) {
             return DataEnvelop.CreateEnvelop(HttpStatus.UNAUTHORIZED, "You can't update someone else");
         }
 
@@ -165,5 +172,4 @@ public class UserController {
         userService.delete(uid);
         return DataEnvelop.CreateEnvelop("User successfully deleted");
     }
-
 }
