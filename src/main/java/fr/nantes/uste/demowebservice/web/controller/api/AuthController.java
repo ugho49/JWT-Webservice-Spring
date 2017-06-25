@@ -36,7 +36,7 @@ public class AuthController {
     public ResponseEntity createAuthenticationToken(@Valid @ModelAttribute AuthenticationModel model, BindingResult result) {
 
         if (result.hasErrors()) {
-            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad model", result);
+            return DataEnvelop.CreateEnvelop(HttpStatus.BAD_REQUEST, "Bad request", result);
         }
 
         // Perform the security

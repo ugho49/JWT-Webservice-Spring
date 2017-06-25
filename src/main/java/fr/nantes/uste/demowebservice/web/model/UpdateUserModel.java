@@ -28,9 +28,6 @@ public class UpdateUserModel implements Serializable, IUserModel {
     @Size(max = 100)
     private String country;
 
-    @Size(min = 8)
-    private String password;
-
     public UpdateUserModel() {
     }
 
@@ -82,11 +79,4 @@ public class UpdateUserModel implements Serializable, IUserModel {
         this.country = country;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

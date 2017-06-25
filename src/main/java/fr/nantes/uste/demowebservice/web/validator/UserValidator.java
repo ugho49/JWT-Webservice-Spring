@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class UserValidator implements Validator{
 
-    protected UserService userService;
+    private final UserService userService;
 
     public UserValidator(UserService userService) {
         this.userService = userService;
